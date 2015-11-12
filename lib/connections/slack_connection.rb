@@ -16,7 +16,19 @@ module Komonjo
       def channels_history(channel_name)
         channel_name[0] = '' if channel_name[0] == '#'
         channel_id = channel_id channel_name
-        ret = Slack.channels_history(channel: channel_id)
+        ret = Slack.channels_history(channel: channel_id,
+                                     count: 1000)
+        fail 'error' unless ret['ok']
+        ret['messages']
+      end
+
+      def channels_history_at(channel_name, day)
+        channel_name[0] = '' if channel_name[0] == '#'
+        channel_id = channel_id(channel_name)
+        ret = Slack.channels_history(channel: channel_id,
+                                     count: 1000,
+                                     oldest: day.to_i,
+                                     latest: day.to_i + 86_400)
         fail 'error' unless ret['ok']
         ret['messages']
       end
